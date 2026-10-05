@@ -1,0 +1,457 @@
+<!DOCTYPE html><html class="h-full bg-black" lang="es"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Wayfinder - Selección de Personajes</title>
+<!-- External Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Authentic 80s/90s Arcade Typography -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;family=VT323&amp;display=swap" rel="stylesheet">
+<!-- Tailwind Custom Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            pixel: ['"Press Start 2P"', 'monospace'],
+            terminal: ['"VT323"', 'monospace']
+          },
+          colors: {
+            jungle: {
+              900: '#07130a',
+              800: '#0d2214',
+              700: '#163b22',
+              glow: '#26ff78'
+            },
+            amberGold: {
+              glow: '#ffbe2e',
+              dim: '#996f12'
+            }
+          },
+          boxShadow: {
+            'pixel-amber': '0 0 0 3px #000, 0 0 0 6px #ffbe2e, 0 0 25px rgba(255, 190, 46, 0.45)',
+            'pixel-dim': '0 0 0 3px #000, 0 0 0 5px #1a3f28'
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Retro Styles -->
+<style data-purpose="retro-crt-screen">
+    /* Scanlines Overlay Simulation */
+    .crt-overlay::before {
+      content: " ";
+      display: block;
+      position: absolute;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), 
+                  linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+      z-index: 40;
+      background-size: 100% 3px, 3px 100%;
+      pointer-events: none;
+    }
+
+    /* Subtle CRT Flicker and Vignette */
+    .crt-vignette {
+      box-shadow: inset 0 0 100px rgba(0,0,0,0.85);
+      pointer-events: none;
+    }
+
+    /* Pixel art crisp image rendering */
+    .pixelated-render {
+      image-rendering: pixelated;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: crisp-edges;
+    }
+  </style>
+<style data-purpose="card-borders-and-animation">
+    /* Double 16-bit pixel borders */
+    .pixel-border-gold {
+      border: 4px solid #ffbe2e;
+      outline: 4px solid #000;
+      box-shadow: 0 0 20px rgba(255, 190, 46, 0.5);
+    }
+    
+    .pixel-border-inactive {
+      border: 4px solid #1c4b2e;
+      outline: 4px solid #000;
+    }
+
+    /* Subtle Breathing Pulse for Selected Frame */
+    @keyframes retro-pulse {
+      0%, 100% {
+        box-shadow: 0 0 18px rgba(255, 190, 46, 0.6), inset 0 0 12px rgba(255, 190, 46, 0.2);
+      }
+      50% {
+        box-shadow: 0 0 30px rgba(255, 230, 80, 0.85), inset 0 0 20px rgba(255, 190, 46, 0.4);
+      }
+    }
+
+    .pulse-gold {
+      animation: retro-pulse 2s infinite ease-in-out;
+    }
+  </style>
+<!-- END: Custom Retro Styles -->
+</head>
+<body class="h-full w-full select-none overflow-hidden bg-black text-gray-200 font-pixel crt-overlay">
+<!-- BEGIN: MasterGameContainer (16:9 Screen Proportions) -->
+<div class="relative w-full h-full flex flex-col justify-between overflow-hidden bg-cover bg-center" data-purpose="game-screen-wrapper" style="background-image: linear-gradient(rgba(5, 15, 8, 0.78), rgba(4, 10, 6, 0.88)), url('https://lh3.googleusercontent.com/aida/AEtjO1XQ9-GkiRtv1fp4P1_lKHwK40N_Xh6ohr0v5kpK1xVuqp7n_7YXCEMwbxTIav-VS80nOVPzfVvh_A4eDEVts0Y6uxpTpgFXVZooNTfg1SNf3D1FnaYBG9d1-_FCg38shWx9KLHvbNJVKER8Sv3bAIPAXR7PoCOXWS5cSHNnMVERLoawU-wRjJtX00YusHauLA0C231dNMiDdFB0QblJiUaE9YqADfVsuhsOVJsywls8xokLQzxISBg93CM3');">
+<div class="absolute inset-0 crt-vignette z-30"></div>
+<!-- BEGIN: TopBar -->
+<header class="relative z-50 flex items-center justify-between px-6 py-3 border-b-4 border-black bg-black/85 backdrop-blur-sm" data-purpose="retro-top-bar">
+<!-- Left: ESC Button -->
+<div class="flex items-center space-x-3">
+<button class="group flex items-center gap-2 bg-[#122416] hover:bg-[#1a3821] text-emerald-400 hover:text-emerald-300 border-2 border-emerald-800 px-3 py-1.5 text-xs transition duration-75 uppercase tracking-wider active:translate-y-0.5" id="btn-back" type="button">
+<span class="text-amber-400 group-hover:text-amber-300">[ESC]</span>
+<span>Volver al Menú</span>
+</button>
+</div>
+<!-- Center: Header Title -->
+<div class="text-center">
+<h1 class="text-amber-400 text-lg md:text-xl font-bold tracking-widest drop-shadow-[0_2px_8px_rgba(255,190,46,0.6)]">
+          SELECCIÓN DE EXPEDICIONARIO
+        </h1>
+<p class="text-emerald-400/90 text-[10px] mt-1 tracking-widest uppercase">
+          - ELIGE A TU SUPERVIVIENTE PARA ENTRAR A LA SELVA -
+        </p>
+</div>
+<!-- Right: Server Status & Audio -->
+<div class="flex items-center gap-5 text-right font-terminal text-lg">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-none bg-emerald-500 animate-ping inline-block"></span>
+<span class="text-emerald-400 tracking-wider">SERVIDOR: SELVA CENTRAL <span class="text-amber-400">[ONLINE]</span></span>
+</div>
+<div class="hidden lg:flex items-center gap-1.5 text-emerald-500 border border-emerald-900 bg-emerald-950/40 px-2.5 py-0.5 text-sm">
+<span>CHIPTUNE:</span>
+<span class="text-emerald-300 animate-pulse">128 KBPS ♫</span>
+</div>
+</div>
+</header>
+<!-- END: TopBar -->
+<!-- BEGIN: MainCharacterGallery -->
+<main class="relative z-40 flex-1 flex items-center justify-center px-4 py-2" data-purpose="character-selection-carousel">
+<div class="w-full max-w-7xl grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-7 items-stretch h-[82vh] max-h-[740px]">
+<!-- BEGIN: Character Slot 1 (Mateo) -->
+<div class="character-card cursor-pointer group flex flex-col justify-between bg-[#0b1b11]/90 border-4 border-[#1c4b2e] p-3 transition-all duration-150 hover:border-emerald-500 relative" data-char-index="0" data-purpose="character-card" id="card-0">
+<!-- Status Tag -->
+<div class="status-badge hidden absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-400 text-black text-[9px] px-3 py-0.5 font-bold uppercase tracking-wider shadow-md">
+            [SELECCIONADO]
+          </div>
+<!-- Character Visual Viewport -->
+<div class="relative w-full h-[52%] overflow-hidden bg-black/60 border-2 border-black">
+<img alt="Mateo El Guía" class="w-full h-full object-cover object-top pixelated-render transition-transform duration-300 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1XMOtG88S6HLy8WDbVUvkCDVkSI6bwgqLXhMvxXyTfwQYQ5qpo4hTAE2WyNABMh2GEqsJkoMEg9avmkp-NcBDy8Hhlub0n-ea-FG0DWTihWz7ugG09QuYD5oBB1QD2nrJbm-pSsQlN8_JotucON5CjkwkM4Xma0yRKotgdXtLMAPqw56dqgqcO0C4W0oWwEYtzUVnKBgNP3P9-G4qcA9q18TFnaytx11XgpuYJ2Z1rIOTYbXb4Lc_DeECcB">
+<div class="absolute bottom-1 right-2 font-terminal text-emerald-300 text-base bg-black/80 px-2 border border-emerald-900">
+              EXP #001
+            </div>
+</div>
+<!-- Character Identity -->
+<div class="mt-2 text-center border-b-2 border-emerald-950 pb-2">
+<h2 class="text-amber-300 text-xs tracking-wider font-bold">MATEO "EL GUÍA"</h2>
+<p class="text-[9px] text-emerald-400 font-terminal text-sm mt-0.5 tracking-wide">EXPLORADOR / BOTÁNICO</p>
+<p class="text-[8px] text-amber-200/80 mt-1 uppercase font-terminal text-xs">Arma: Hacha de Mano Selvática</p>
+</div>
+<!-- Character Stats Grid -->
+<div class="font-terminal text-sm space-y-1 my-1 px-1 bg-black/40 p-2 border border-emerald-950">
+<div class="flex justify-between items-center text-xs">
+<span class="text-emerald-400">VELOCIDAD:</span>
+<span class="text-amber-400 tracking-tighter">■■■■■□□□ <span class="text-gray-400 text-[10px]">5/8</span></span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-emerald-400">FUERZA:</span>
+<span class="text-amber-400 tracking-tighter">■■■■■■□□ <span class="text-gray-400 text-[10px]">6/8</span></span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-emerald-400">RESISTENCIA:</span>
+<span class="text-amber-400 tracking-tighter">■■■■■□□□ <span class="text-gray-400 text-[10px]">5/8</span></span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-emerald-400">SIGILO:</span>
+<span class="text-amber-400 tracking-tighter">■■■■■■■□ <span class="text-gray-400 text-[10px]">7/8</span></span>
+</div>
+</div>
+<!-- Perk / Trait Description -->
+<div class="bg-[#051108] border border-emerald-900/80 p-2 text-[8px] leading-relaxed text-gray-300">
+<span class="text-amber-400 font-bold block mb-0.5">RASGO NATIVO:</span>
+            "Supervivencia Nativa: Encuentra hierbas medicinales y atajos en la maleza densa."
+          </div>
+<!-- Slot Number Key Hint -->
+<div class="text-center font-terminal text-emerald-500 text-xs pt-1">
+            [PRESIONA 1]
+          </div>
+</div>
+<!-- END: Character Slot 1 -->
+<!-- BEGIN: Character Slot 2 (Rodrigo - Default Active) -->
+<div class="character-card cursor-pointer group flex flex-col justify-between bg-[#112417]/95 border-4 border-amber-400 pulse-gold p-3 transition-all duration-150 relative scale-[1.02] shadow-pixel-amber" data-char-index="1" data-purpose="character-card" id="card-1">
+<!-- Status Tag -->
+<div class="status-badge absolute -top-3.5 left-1/2 -translate-x-1/2 bg-amber-400 text-black text-[9px] px-3.5 py-0.5 font-bold uppercase tracking-widest border border-black shadow-lg">
+            [SELECCIONADO]
+          </div>
+<!-- Character Visual Viewport -->
+<div class="relative w-full h-[52%] overflow-hidden bg-black/70 border-2 border-black">
+<img alt="Rodrigo El Vanguardia" class="w-full h-full object-cover object-top pixelated-render transition-transform duration-300 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1UBJThYnccy_8eI6D8_c276YujDUbM2knPYUJlSKkKU2c4eQhcgfMIj87n-58pjFNyRI2Ii0HZJAnx0Lf3lW5_Yrt8V4Edol1s71ktBA_KenH5F8wR2plnEymAkTITNS2VC-f5uxaoQdpQtDlvAN86llSuPJDJhUFmmzeZflXf8hFWI5TychFfa_SarFZRLHMux0RZMEfX0lFKVrz84RHqCaEFhzFFE_BtDVuSuULFoxftkDgl6C68rMeno">
+<div class="absolute bottom-1 right-2 font-terminal text-amber-300 text-base bg-black/80 px-2 border border-amber-500">
+              EXP #002
+            </div>
+</div>
+<!-- Character Identity -->
+<div class="mt-2 text-center border-b-2 border-amber-500/50 pb-2">
+<h2 class="text-amber-300 text-xs tracking-wider font-bold">RODRIGO "EL VANGUARDIA"</h2>
+<p class="text-[9px] text-emerald-400 font-terminal text-sm mt-0.5 tracking-wide">RASTREADOR ÁGIL</p>
+<p class="text-[8px] text-amber-200/90 mt-1 uppercase font-terminal text-xs">Arma: Cuchillo Táctico de Caza</p>
+</div>
+<!-- Character Stats Grid -->
+<div class="font-terminal text-sm space-y-1 my-1 px-1 bg-black/50 p-2 border border-amber-500/40">
+<div class="flex justify-between items-center text-xs">
+<span class="text-emerald-300">VELOCIDAD:</span>
+<span class="text-amber-400 tracking-tighter">■■■■■■■□ <span class="text-amber-300/80 text-[10px]">7/8</span></span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-emerald-300">FUERZA:</span>
+<span class="text-amber-400 tracking-tighter">■■■■■□□□ <span class="text-amber-300/80 text-[10px]">5/8</span></span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-emerald-300">RESISTENCIA:</span>
+<span class="text-amber-400 tracking-tighter">■■■■■■□□ <span class="text-amber-300/80 text-[10px]">6/8</span></span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-emerald-300">SIGILO:</span>
+<span class="text-amber-400 tracking-tighter">■■■■■■■■ <span class="text-amber-300/80 text-[10px]">8/8</span></span>
+</div>
+</div>
+<!-- Perk / Trait Description -->
+<div class="bg-[#07190d] border border-amber-500/60 p-2 text-[8px] leading-relaxed text-gray-200">
+<span class="text-amber-400 font-bold block mb-0.5">RASGO NATIVO:</span>
+            "Paso Silencioso: Los centinelas y jaguares tardan más en detectar su presencia."
+          </div>
+<!-- Slot Number Key Hint -->
+<div class="text-center font-terminal text-amber-400 text-xs pt-1">
+            [PRESIONA 2]
+          </div>
+</div>
+<!-- END: Character Slot 2 -->
+<!-- BEGIN: Character Slot 3 (Daniel) -->
+<div class="character-card cursor-pointer group flex flex-col justify-between bg-[#0b1b11]/90 border-4 border-[#1c4b2e] p-3 transition-all duration-150 hover:border-emerald-500 relative" data-char-index="2" data-purpose="character-card" id="card-2">
+<!-- Status Tag -->
+<div class="status-badge hidden absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-400 text-black text-[9px] px-3 py-0.5 font-bold uppercase tracking-wider shadow-md">
+            [SELECCIONADO]
+          </div>
+<!-- Character Visual Viewport -->
+<div class="relative w-full h-[52%] overflow-hidden bg-black/60 border-2 border-black">
+<img alt="Daniel El Brechero" class="w-full h-full object-cover object-top pixelated-render transition-transform duration-300 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1W9MVY_sCSWmyN-6yFFlKvM9bZS7UZf3w-vaebirKQAVCmwLWaMchQM-hockOf5G-xzAYRG_dtXI10swP6IXOgSImmnQSa7PshYzOXxQXEHPesTWAmcuXrOB-6XUROV_36OECxYtMIS29fy5s6flQ-BhgbGrz7zjb7NtXk12Em54qz4GRB1TpyieRAMoas2F1xWGcg13fB1V8M8wm3L0UoUlHDhTjI_eZZQOl-0vwuC3QsjHiYgUVAWRV9h">
+<div class="absolute bottom-1 right-2 font-terminal text-emerald-300 text-base bg-black/80 px-2 border border-emerald-900">
+              EXP #003
+            </div>
+</div>
+<!-- Character Identity -->
+<div class="mt-2 text-center border-b-2 border-emerald-950 pb-2">
+<h2 class="text-amber-300 text-xs tracking-wider font-bold">DANIEL "EL BRECHERO"</h2>
+<p class="text-[9px] text-emerald-400 font-terminal text-sm mt-0.5 tracking-wide">SUPERVIVIENTE DE ASALTO</p>
+<p class="text-[8px] text-amber-200/80 mt-1 uppercase font-terminal text-xs">Arma: Machete de Acero Pesado</p>
+</div>
+<!-- Character Stats Grid -->
+<div class="font-terminal text-sm space-y-1 my-1 px-1 bg-black/40 p-2 border border-emerald-950">
+<div class="flex justify-between items-center text-xs">
+<span class="text-emerald-400">VELOCIDAD:</span>
+<span class="text-amber-400 tracking-tighter">■■■■□□□□ <span class="text-gray-400 text-[10px]">4/8</span></span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-emerald-400">FUERZA:</span>
+<span class="text-amber-400 tracking-tighter">■■■■■■■■ <span class="text-gray-400 text-[10px]">8/8</span></span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-emerald-400">RESISTENCIA:</span>
+<span class="text-amber-400 tracking-tighter">■■■■■■■□ <span class="text-gray-400 text-[10px]">7/8</span></span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-emerald-400">SIGILO:</span>
+<span class="text-amber-400 tracking-tighter">■■■■□□□□ <span class="text-gray-400 text-[10px]">4/8</span></span>
+</div>
+</div>
+<!-- Perk / Trait Description -->
+<div class="bg-[#051108] border border-emerald-900/80 p-2 text-[8px] leading-relaxed text-gray-300">
+<span class="text-amber-400 font-bold block mb-0.5">RASGO NATIVO:</span>
+            "Fuerza Bruta: Corta vegetación impenetrable y causa daño masivo a obstáculos."
+          </div>
+<!-- Slot Number Key Hint -->
+<div class="text-center font-terminal text-emerald-500 text-xs pt-1">
+            [PRESIONA 3]
+          </div>
+</div>
+<!-- END: Character Slot 3 -->
+</div>
+</main>
+<!-- END: MainCharacterGallery -->
+<!-- BEGIN: BottomActionBar -->
+<footer class="relative z-50 px-6 py-4 bg-black/90 border-t-4 border-black flex flex-col md:flex-row items-center justify-between gap-4" data-purpose="retro-control-footer">
+<!-- Hotkey Cheatsheet -->
+<div class="flex items-center gap-3 text-emerald-400 font-terminal text-base tracking-wider">
+<span class="bg-[#122416] px-2 py-0.5 border border-emerald-700 text-amber-300 text-sm font-pixel">[A / D] o [← / →]</span>
+<span>CAMBIAR PERSONAJE</span>
+<span class="text-emerald-700">|</span>
+<span class="bg-[#122416] px-2 py-0.5 border border-emerald-700 text-amber-300 text-sm font-pixel">[ESPACIO]</span>
+<span>DETALLES</span>
+</div>
+<!-- Main Action Call to Action Button -->
+<div>
+<button class="group relative inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-black font-bold text-xs uppercase tracking-widest border-4 border-black shadow-[0_0_20px_rgba(255,190,46,0.8)] hover:brightness-110 active:translate-y-1 transition-all" id="btn-confirm" type="button">
+<span class="relative flex items-center gap-2">
+<span class="text-black group-hover:translate-x-1 transition-transform">▶</span>
+<span>CONFIRMAR EXPEDICIONARIO [ENTER]</span>
+</span>
+</button>
+</div>
+<!-- Difficulty Selector / Mode Badge -->
+<div class="flex items-center gap-2">
+<div class="border-2 border-emerald-800 bg-[#08170c] px-3 py-1.5 text-right font-terminal">
+<span class="text-emerald-400 text-sm block">MODO EXPEDICIÓN:</span>
+<span class="text-amber-400 text-base tracking-wider font-bold">[SELVA PROFUNDA - NORMAL]</span>
+</div>
+</div>
+</footer>
+<!-- END: BottomActionBar -->
+<!-- Modal: Confirmation Flash Screen -->
+<div class="hidden absolute inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md" id="selection-modal">
+<div class="p-8 max-w-lg border-4 border-amber-400 bg-[#0c1f13] text-center shadow-pixel-amber">
+<h3 class="text-amber-300 text-sm mb-3">¡EXPEDICIONARIO ASIGNADO!</h3>
+<p class="text-emerald-400 text-xs mb-6" id="modal-char-name">RODRIGO "EL VANGUARDIA"</p>
+<p class="text-[10px] text-gray-300 mb-6 font-terminal text-lg">Iniciando descenso en la zona selvática no mapeada... prepárense para el impacto.</p>
+<button class="px-6 py-2 bg-amber-400 text-black text-xs font-bold uppercase hover:bg-amber-300" id="btn-close-modal" type="button">
+          CONTINUAR [ENTER]
+        </button>
+</div>
+</div>
+</div>
+<!-- END: MasterGameContainer -->
+<!-- BEGIN: Interactive Game Navigation Logic -->
+<script data-purpose="character-switch-script">
+    (function () {
+      const characterCards = document.querySelectorAll('.character-card');
+      const confirmBtn = document.getElementById('btn-confirm');
+      const modal = document.getElementById('selection-modal');
+      const modalName = document.getElementById('modal-char-name');
+      const closeModalBtn = document.getElementById('btn-close-modal');
+      const backBtn = document.getElementById('btn-back');
+
+      let selectedIndex = 1; // Default to center character (Rodrigo)
+
+      const characterNames = [
+        'MATEO "EL GUÍA"',
+        'RODRIGO "EL VANGUARDIA"',
+        'DANIEL "EL BRECHERO"'
+      ];
+
+      // Play simulated chiptune blip using AudioContext API
+      function playRetroBeep(freq = 440, type = 'square', duration = 0.08) {
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) return;
+          const ctx = new AudioContext();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, ctx.currentTime);
+          gain.gain.setValueAtTime(0.08, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + duration);
+        } catch (e) {
+          // Audio disabled or unsupported
+        }
+      }
+
+      // Update character card visuals
+      function updateSelection(newIndex) {
+        if (newIndex < 0) newIndex = characterCards.length - 1;
+        if (newIndex >= characterCards.length) newIndex = 0;
+
+        selectedIndex = newIndex;
+        playRetroBeep(520, 'triangle', 0.07);
+
+        characterCards.forEach((card, idx) => {
+          const badge = card.querySelector('.status-badge');
+          if (idx === selectedIndex) {
+            // Selected Style
+            card.classList.remove('border-[#1c4b2e]', 'bg-[#0b1b11]/90');
+            card.classList.add('border-amber-400', 'bg-[#112417]/95', 'pulse-gold', 'scale-[1.02]', 'shadow-pixel-amber');
+            badge.classList.remove('hidden');
+          } else {
+            // Inactive Style
+            card.classList.remove('border-amber-400', 'bg-[#112417]/95', 'pulse-gold', 'scale-[1.02]', 'shadow-pixel-amber');
+            card.classList.add('border-[#1c4b2e]', 'bg-[#0b1b11]/90');
+            badge.classList.add('hidden');
+          }
+        });
+      }
+
+      // Click event for character cards
+      characterCards.forEach((card) => {
+        card.addEventListener('click', () => {
+          const index = parseInt(card.getAttribute('data-char-index'), 10);
+          updateSelection(index);
+        });
+      });
+
+      // Keyboard Controls Navigation
+      window.addEventListener('keydown', (e) => {
+        if (modal && !modal.classList.contains('hidden')) {
+          if (e.key === 'Enter' || e.key === 'Escape') {
+            modal.classList.add('hidden');
+            playRetroBeep(440, 'square', 0.1);
+          }
+          return;
+        }
+
+        switch (e.key) {
+          case 'ArrowLeft':
+          case 'a':
+          case 'A':
+            updateSelection(selectedIndex - 1);
+            break;
+          case 'ArrowRight':
+          case 'd':
+          case 'D':
+            updateSelection(selectedIndex + 1);
+            break;
+          case '1':
+            updateSelection(0);
+            break;
+          case '2':
+            updateSelection(1);
+            break;
+          case '3':
+            updateSelection(2);
+            break;
+          case 'Enter':
+          case ' ':
+            e.preventDefault();
+            confirmSelection();
+            break;
+          case 'Escape':
+            playRetroBeep(260, 'sawtooth', 0.12);
+            alert("Acción: Volviendo a la pantalla de título retro de Wayfinder.");
+            break;
+        }
+      });
+
+      function confirmSelection() {
+        playRetroBeep(880, 'square', 0.18);
+        modalName.textContent = characterNames[selectedIndex];
+        modal.classList.remove('hidden');
+      }
+
+      confirmBtn.addEventListener('click', confirmSelection);
+      closeModalBtn.addEventListener('click', () => {
+        modal.classList.add('hidden');
+      });
+
+      backBtn.addEventListener('click', () => {
+        playRetroBeep(300, 'square', 0.09);
+        alert("Volviendo al menú principal...");
+      });
+    })();
+  </script>
+<!-- END: Interactive Game Navigation Logic -->
+</body></html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html><html class="h-full bg-slate-950" lang="es" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Wayfinder - Frontera de México: El Muro y el Cruce Nocturno</title>
+<!-- Tailwind CSS CDN with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration for Retro Gaming Theme -->
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            arcade: {
+              dark: '#05070b',
+              panel: '#0a0f1d',
+              border: '#1f293d',
+              phosphor: '#00ff9d',
+              searchlight: '#ffb703',
+              alert: '#ff3366',
+              sand: '#d4a373',
+              cyan: '#38bdf8'
+            }
+          },
+          fontFamily: {
+            pixel: ['"Courier New"', 'Courier', 'monospace', 'ui-monospace']
+          },
+          boxShadow: {
+            'crt': 'inset 0 0 35px rgba(0, 0, 0, 0.9), 0 0 25px rgba(56, 189, 248, 0.15)',
+            'phosphor-glow': '0 0 10px rgba(0, 255, 157, 0.4)',
+            'alert-glow': '0 0 12px rgba(255, 51, 102, 0.5)'
+          }
+        }
+      }
+    };
+  </script>
+<!-- Custom Retro CRT & Pixel FX Styles -->
+<style data-purpose="crt-effects">
+    /* Scanline overlay emulation */
+    .crt-overlay {
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.35) 50%
+      ), linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.03),
+        rgba(0, 255, 0, 0.01),
+        rgba(0, 0, 255, 0.03)
+      );
+      background-size: 100% 3px, 6px 100%;
+      pointer-events: none;
+    }
+
+    /* Pixelated typography touch */
+    .pixel-text {
+      text-shadow: 1px 1px 0px rgba(0,0,0,0.85);
+      letter-spacing: 0.04em;
+    }
+
+    /* Subtle pulse animation for searchlight warning */
+    @keyframes pulseWarning {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(0.995); }
+    }
+    .animate-pulse-warning {
+      animation: pulseWarning 2.2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="h-full bg-[#05070b] text-slate-200 font-pixel selection:bg-emerald-500 selection:text-black flex flex-col justify-between overflow-x-hidden antialiased p-2 sm:p-4">
+<!-- BEGIN: MainContainer -->
+<div class="max-w-[1520px] w-full mx-auto flex flex-col gap-2 sm:gap-3 h-full justify-between" data-purpose="arcade-cabinet-frame">
+<!-- BEGIN: TacticalTopHUD -->
+<!-- Tactical Top Bar with Team Status, Stealth Gauge, and Border Warning -->
+<header class="bg-[#0a0f1d] border-2 border-[#1f293d] rounded-lg p-2.5 sm:p-3 shadow-md" data-purpose="tactical-hud-top">
+<div class="flex flex-col lg:flex-row items-center justify-between gap-3">
+<!-- Team Members Stealth State Indicators -->
+<div class="flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] sm:text-xs">
+<!-- Johan Status -->
+<div class="flex items-center gap-1.5 bg-black/60 px-2.5 py-1 rounded border border-slate-700/60">
+<span class="w-2 h-2 rounded-full bg-arcade-phosphor animate-pulse"></span>
+<span class="text-slate-400">JOHAN [LÍDER]:</span>
+<span class="text-arcade-phosphor font-bold">PRONO / OK</span>
+</div>
+<!-- Stiven Status -->
+<div class="flex items-center gap-1.5 bg-black/60 px-2.5 py-1 rounded border border-slate-700/60">
+<span class="w-2 h-2 rounded-full bg-arcade-phosphor"></span>
+<span class="text-slate-400">STIVEN:</span>
+<span class="text-arcade-phosphor font-bold">A RAS DE SUELO</span>
+</div>
+<!-- Breiner Status -->
+<div class="flex items-center gap-1.5 bg-black/60 px-2.5 py-1 rounded border border-slate-700/60">
+<span class="w-2 h-2 rounded-full bg-arcade-searchlight"></span>
+<span class="text-slate-400">BREINER:</span>
+<span class="text-arcade-searchlight font-bold">ALERTA / OK</span>
+</div>
+<!-- Mysterious Hooded Guide Status -->
+<div class="flex items-center gap-1.5 bg-black/60 px-2.5 py-1 rounded border border-cyan-800/60">
+<span class="w-2 h-2 rounded-full bg-arcade-cyan animate-ping"></span>
+<span class="text-slate-300">ENCAPUCHADO:</span>
+<span class="text-arcade-cyan font-bold">SEÑALIZANDO RUTA SILENCIOSA</span>
+</div>
+</div>
+<!-- Global Stealth Gauge & Alert Warning -->
+<div class="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
+<!-- Stealth Progress Meter -->
+<div class="flex items-center gap-2 bg-black/70 px-3 py-1.5 rounded border border-emerald-900/60 w-full sm:w-auto justify-between sm:justify-start">
+<span class="text-[10px] sm:text-xs text-arcade-phosphor font-semibold">SIGILO:</span>
+<div class="w-28 sm:w-36 bg-slate-900 h-2.5 rounded-sm overflow-hidden border border-emerald-700/50 p-[1px]">
+<div class="h-full bg-gradient-to-r from-emerald-500 to-arcade-phosphor rounded-sm" style="width: 96%"></div>
+</div>
+<span class="text-[11px] sm:text-xs text-arcade-phosphor font-bold">96% [EN SOMBRAS]</span>
+</div>
+<!-- Active Border Sector Alert Box -->
+<div class="flex items-center gap-2 bg-rose-950/60 border border-arcade-alert/80 text-arcade-alert px-3 py-1 rounded text-[11px] sm:text-xs font-bold animate-pulse-warning shadow-alert-glow">
+<span class="text-sm">⚠️</span>
+<span class="">ALERTA DE CRUCE // SECTOR MURO 07: BARRIDO DE REFLECTORES ACTIVO</span>
+</div>
+</div>
+</div>
+</header>
+<!-- END: TacticalTopHUD -->
+<!-- BEGIN: CRTGameDisplayArea -->
+<!-- Main 16:9 Retro Arcade Screen with CRT Bezels, Scanlines, and Action QTE -->
+<main class="relative bg-black rounded-xl p-2 sm:p-3 border-2 border-slate-800 shadow-crt overflow-hidden flex flex-col justify-center items-center" data-purpose="gameplay-viewport">
+<!-- Screen Bezel Texture Lines -->
+<div class="w-full relative rounded-lg overflow-hidden border border-slate-700/80 bg-slate-950 flex items-center justify-center">
+<!-- Central Retro 16-bit In-Game Screenshot -->
+<img alt="Authentic 16-bit retro arcade pixel art video game in-game action screenshot of border wall night infiltration" class="w-full h-auto max-h-[64vh] object-contain block mx-auto pixel-text select-none" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXfjUlxc4jInJU4LZWb4boQAgpbGtYft7aVKI_hluoqjIric101zGyndPYRYz-YbAnGm2Z0p3id5QKf97-jvzBSAOfYMCj9ggizewE1dQjpfhOb1BUL4y9iRH5F-RC0DgEHDYzeFYjMI8HtOvexVretCNbLuErXbrooN5WwvsY-wimcsmoBk4wTs5Rs-8o5lk047O4vtdnSzabHiSaw1Je4d-a2PXYEGldjStbqcsDt-unbpK5W7qb4w">
+<!-- CRT Scanline Filter Overlay -->
+<div aria-hidden="true" class="absolute inset-0 crt-overlay pointer-events-none"></div>
+<!-- Corner Arcade Vignette & Glare -->
+<div aria-hidden="true" class="absolute inset-0 bg-radial from-transparent via-transparent to-black/60 pointer-events-none"></div>
+<!-- Dynamic Action Prompt (QTE Banner over bottom screen) -->
+<div class="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 bg-black/85 border border-arcade-searchlight/90 text-arcade-searchlight px-4 py-2 rounded shadow-lg backdrop-blur-xs flex items-center gap-2 text-center text-xs sm:text-sm font-bold tracking-wide">
+<span class="bg-arcade-searchlight text-black px-1.5 py-0.5 rounded text-[10px] font-black uppercase">ESPACIO</span>
+<span class="">GATEAR BAJO LA SOMBRA DEL MURO // ATENCIÓN AL CICLO DEL REFLECTOR</span>
+</div>
+</div>
+</main>
+<!-- END: CRTGameDisplayArea -->
+<!-- BEGIN: TacticalBottomPanels -->
+<!-- Bottom Tactical Hub: Tactical Log, Stealth Metrics, and Command Controls -->
+<footer class="grid grid-cols-1 md:grid-cols-12 gap-2 sm:gap-3 text-xs" data-purpose="tactical-controls-footer">
+<!-- Panel 1: Infiltration Log / Radio Comms (Left) -->
+<section class="md:col-span-5 bg-[#0a0f1d] border border-slate-800 rounded-lg p-3 flex flex-col justify-between" data-purpose="tactical-log-panel">
+<div>
+<div class="flex items-center justify-between border-b border-slate-800 pb-1.5 mb-2">
+<span class="text-arcade-cyan font-bold tracking-wider uppercase text-[11px]">COMUNICACIÓN DE INFILTRACIÓN // SECTOR LA FRONTERA</span>
+<span class="text-[10px] text-slate-500 font-mono">CANAL ENCRIPTADO #04</span>
+</div>
+<p class="text-slate-300 leading-relaxed text-[11px] sm:text-xs">
+            El guía encapuchado alza la mano indicando detenerse. A pocos metros, las potentes luces halógenas de las garitas barren la arena del desierto. Los cuatro deben coordinar el arrastre pegados a las vigas de acero del muro para aprovechar el punto ciego del reflector.
+          </p>
+</div>
+<div class="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400">
+<span class="">OBJETIVO: CRUZAR PERÍMETRO SIN ACTIVAR SIRENA</span>
+<span class="text-arcade-phosphor">TERRENO: ARENA SUAVE / VALLA METÁLICA</span>
+</div>
+</section>
+<!-- Panel 2: Sensor Metrics & Searchlight Timing (Center) -->
+<section class="md:col-span-4 bg-[#0a0f1d] border border-slate-800 rounded-lg p-3 flex flex-col justify-between" data-purpose="tactical-telemetry-panel">
+<div class="border-b border-slate-800 pb-1.5 mb-2 flex items-center justify-between">
+<span class="text-arcade-sand font-bold uppercase text-[11px]">MÉTRICAS DEL ENTORNO</span>
+<span class="text-arcade-phosphor text-[10px] animate-pulse">RADAR ACTIVO</span>
+</div>
+<div class="space-y-1.5 text-[11px]">
+<!-- Reflector Cycle -->
+<div class="flex justify-between items-center bg-black/40 px-2 py-1 rounded border border-slate-800/60">
+<span class="text-slate-400">ESTADO DEL REFLECTOR:</span>
+<span class="text-arcade-searchlight font-bold">BARRIDO A 4.2s</span>
+</div>
+<!-- Target Distance -->
+<div class="flex justify-between items-center bg-black/40 px-2 py-1 rounded border border-slate-800/60">
+<span class="text-slate-400">DISTANCIA AL PUNTO DE QUIEBRE:</span>
+<span class="text-slate-200 font-bold">35 METROS</span>
+</div>
+<!-- Sand Noise Level -->
+<div class="flex justify-between items-center bg-black/40 px-2 py-1 rounded border border-slate-800/60">
+<span class="text-slate-400">RUIDO EN ARENA:</span>
+<span class="text-arcade-phosphor font-bold">MÍNIMO (8%)</span>
+</div>
+<!-- Patrol Dogs Proximity -->
+<div class="flex justify-between items-center bg-black/40 px-2 py-1 rounded border border-slate-800/60">
+<span class="text-slate-400">PERROS PATRULLEROS:</span>
+<span class="text-slate-300 font-bold">DISTANTES (VIENTO A FAVOR)</span>
+</div>
+</div>
+</section>
+<!-- Panel 3: Tactical Keyboard Commands & Primary Action Button (Right) -->
+<section class="md:col-span-3 bg-[#0a0f1d] border border-slate-800 rounded-lg p-3 flex flex-col justify-between" data-purpose="tactical-actions-panel">
+<div>
+<div class="border-b border-slate-800 pb-1.5 mb-2">
+<span class="text-slate-400 font-bold uppercase text-[11px]">CONTROLES TÁCTICOS PC</span>
+</div>
+<ul class="space-y-1 text-[11px]">
+<li class="flex items-center gap-1.5">
+<kbd class="bg-slate-800 border border-slate-600 px-1.5 py-0.5 rounded text-[10px] font-bold text-slate-200 shadow-sm">ESPACIO</kbd>
+<span class="text-slate-300">Reptar / Gatear en Arena</span>
+</li>
+<li class="flex items-center gap-1.5">
+<kbd class="bg-slate-800 border border-slate-600 px-1.5 py-0.5 rounded text-[10px] font-bold text-slate-200 shadow-sm">CTRL</kbd>
+<span class="text-slate-300">Cuerpo a Tierra (Inmóvil)</span>
+</li>
+<li class="flex items-center gap-1.5">
+<kbd class="bg-slate-800 border border-slate-600 px-1.5 py-0.5 rounded text-[10px] font-bold text-slate-200 shadow-sm">Q</kbd>
+<span class="text-slate-300">Seguir al Encapuchado</span>
+</li>
+</ul>
+</div>
+<!-- Primary Action Interactive Button -->
+<button class="mt-3 w-full bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-black font-extrabold py-2 px-3 rounded border border-arcade-phosphor shadow-phosphor-glow transition-all duration-150 transform active:scale-95 text-center text-xs tracking-wide uppercase cursor-pointer" data-purpose="action-advance-button" onclick="alert('¡Iniciando avance en sigilo! Esperando pase del reflector en 4 segundos...')" type="button">
+          AVANZAR GATEANDO EN LA OSCURIDAD ➔
+        </button>
+</section>
+</footer>
+<!-- END: TacticalBottomPanels -->
+</div>
+<!-- END: MainContainer -->
+<!-- Interactive Feedback Script -->
+<script data-purpose="keyboard-navigation">
+    // Optional tactile feedback on desktop keypress for game immersion
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        console.log('[GAME ACTION]: Avanzando sigilosamente bajo la sombra del muro.');
+      }
+    });
+  </script>
+
+
+
+
+</body></html>

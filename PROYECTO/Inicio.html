@@ -1,0 +1,673 @@
+<!DOCTYPE html><html class="h-full bg-slate-950" lang="es"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>WAYFINDER - Retro Pixel Adventure</title>
+<!-- Tailwind CSS v3 with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Pixel Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;family=Silkscreen:wght@400;700&amp;display=swap" rel="stylesheet">
+<!-- Tailwind Custom Config -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            pixel: ['"Press Start 2P"', 'monospace'],
+            silkscreen: ['"Silkscreen"', 'monospace']
+          },
+          colors: {
+            retro: {
+              sky: '#1a1936',
+              gold: '#ffd541',
+              neon: '#5cf0f8',
+              crimson: '#c2272d',
+              panel: '#0d1322'
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Pixel & CRT Styles -->
+<style data-purpose="pixel-rendering">
+    /* Pixelated image rendering for crisp pixel fidelity */
+    .pixel-art {
+      image-rendering: -moz-crisp-edges;
+      image-rendering: -webkit-crisp-edges;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    /* Retro Pixel Text Shadow Outlines */
+    .pixel-shadow-title {
+      text-shadow: 
+        -4px -4px 0 #000,  
+         0   -4px 0 #000,
+         4px -4px 0 #000,
+         4px  0   0 #000,
+         4px  4px 0 #000,
+         0    4px 0 #000,
+        -4px  4px 0 #000,
+        -4px  0   0 #000,
+         0    6px 0 rgba(0,0,0,0.95);
+    }
+
+    .pixel-shadow-menu {
+      text-shadow: 
+        -3px -3px 0 #000,  
+         3px -3px 0 #000,
+        -3px  3px 0 #000,
+         3px  3px 0 #000,
+         0    4px 0 #000,
+        -2px  0   0 #000,
+         2px  0   0 #000;
+    }
+
+    .pixel-shadow-sub {
+      text-shadow: 
+        -2px -2px 0 #000,  
+         2px -2px 0 #000,
+        -2px  2px 0 #000,
+         2px  2px 0 #000,
+         0    3px 0 rgba(0,0,0,0.9);
+    }
+
+    /* Chunky beveled pixel UI buttons */
+    .pixel-btn-chunky {
+      position: relative;
+      background-color: rgba(13, 19, 34, 0.85);
+      border: 2px solid #000;
+      box-shadow: 
+        inset 2px 2px 0px 0px rgba(255, 255, 255, 0.4),
+        inset -2px -2px 0px 0px rgba(0, 0, 0, 0.75),
+        0 3px 0 0 #000;
+      transition: transform 0.05s ease, box-shadow 0.05s ease;
+    }
+
+    .pixel-btn-chunky:hover {
+      background-color: #1c2742;
+      box-shadow: 
+        inset 2px 2px 0px 0px #ffd541,
+        inset -2px -2px 0px 0px #78350f,
+        0 3px 0 0 #000;
+    }
+
+    .pixel-btn-chunky:active {
+      transform: translate(1px, 1px);
+    }
+
+    /* Primary Start Button Variant */
+    .pixel-btn-primary {
+      background-color: #92400e;
+      box-shadow: 
+        inset 2px 2px 0px 0px #fef08a,
+        inset -2px -2px 0px 0px #451a03,
+        0 3px 0 0 #000;
+    }
+
+    /* Chunky Pixel HUD Panel */
+    .pixel-panel {
+      background: rgba(8, 12, 22, 0.9);
+      border: 3px solid #000;
+      box-shadow: 
+        inset 2px 2px 0px 0px #334155,
+        inset -2px -2px 0px 0px #020617,
+        0 6px 0 0 rgba(0,0,0,0.8);
+    }
+
+    /* Clean underline menu items - NO solid card background */
+    .menu-btn {
+      background: transparent;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      position: relative;
+      padding: 6px 0;
+      transition: transform 0.1s ease;
+    }
+    
+    .menu-btn:hover, .menu-btn.active-focused {
+      transform: translateX(6px);
+    }
+
+    /* Underline bar styles */
+    .underline-bar {
+      height: 3px;
+      transition: width 0.2s ease, background-color 0.2s ease;
+    }
+  </style>
+<style data-purpose="crt-effects">
+    /* Subtle CRT Scanline overlay (light enough so art remains visible) */
+    .crt-scanlines::before {
+      content: " ";
+      display: block;
+      position: absolute;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.2) 50%
+      ); 
+      z-index: 30;
+      background-size: 100% 4px;
+      pointer-events: none;
+    }
+
+    /* CRT Vignette curvature shadow */
+    .crt-screen-frame {
+      box-shadow: 
+        inset 0 0 60px rgba(0,0,0,0.6), 
+        0 0 0 4px #080a10,
+        0 0 0 8px #1e293b,
+        0 15px 35px rgba(0,0,0,0.9);
+    }
+
+    /* Pixel cursor animation */
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+    .pixel-blink {
+      animation: blink 0.75s infinite steps(1);
+    }
+  </style>
+<!-- END: Custom Pixel & CRT Styles -->
+</head>
+<body class="h-full w-full overflow-hidden flex items-center justify-center bg-[#07090f] select-none font-pixel antialiased text-white p-1 sm:p-3 md:p-5">
+<!-- BEGIN: PC 16:9 Desktop Gaming Frame -->
+<div class="relative w-full max-w-[1720px] aspect-[16/9] max-h-[98vh] bg-[#0d1322] overflow-hidden crt-scanlines crt-screen-frame rounded-md flex flex-col justify-between" id="arcade-cabinet-frame">
+<!-- CRT Bezel & Corner Accents -->
+<div class="absolute top-2 left-3 z-40 text-[9px] text-white/50 font-silkscreen pointer-events-none hidden md:block drop-shadow-[0_1px_1px_#000]">
+  WAYFINDER // CRT 60Hz RGB MATRIX
+</div>
+<div class="absolute top-2 right-3 z-40 text-[9px] text-white/50 font-silkscreen pointer-events-none hidden md:block drop-shadow-[0_1px_1px_#000]">
+  LATAM V.1.2 PC EDITION
+</div>
+<!-- BEGIN: User Uploaded Pixel Art Background Illustration (Clearly visible & crisp) -->
+<div class="absolute inset-0 z-0 overflow-hidden flex items-center justify-center bg-[#0e1220]" data-purpose="background-artwork-container">
+<!-- The main pixel art image uploaded by the user -->
+<img alt="WAYFINDER Pixel Art Illustration" class="w-full h-full object-cover object-center pixel-art" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAV9-km7QZK4V4yUU-RgVpFabuGc1eorV_TlYOS6SdnGBFDedRuT-q9xsxUnvKB5j73ce2M_xUn3DPyUOvbY9urbwVlJr9QFJVD9kkt2u1OqMYp24mxZA73zCwM3r2KeOXAtSMc7U0aobxW45mVcHJM6IZjbR3ZEZo06rbzd1GHn2WbqJ_nCPlbMrl8lH_k7qI7sBTT57TvD_wzmaeG6wh3I2EwoUqEWPhr6KR7C3dtFp24sPQEr-O4vw">
+<!-- Subtle lateral vignette to ensure left menu and right badges read clearly without dimming the art -->
+<div class="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/50 pointer-events-none"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/40 pointer-events-none"></div>
+</div>
+<!-- END: Background Pixel Art Canvas -->
+<!-- BEGIN: Top Arcade HUD Controls (PC Edition) -->
+<header class="relative z-40 flex items-center justify-between px-4 sm:px-8 pt-4 pb-2" data-purpose="arcade-top-hud">
+<!-- Audio & CRT FX Toggles -->
+<div class="flex items-center gap-2 sm:gap-3">
+<button aria-label="Toggle retro chiptune audio" class="pixel-btn-chunky text-[9px] sm:text-[10px] px-3 py-1.5 text-yellow-300 active:translate-y-0.5 tracking-wider flex items-center gap-2 cursor-pointer" id="sound-toggle-btn">
+<span class="" id="sound-icon">🔊</span>
+<span class="font-silkscreen" id="sound-status">CHIPTUNE: ON</span>
+<span class="text-[8px] text-white/60 bg-black/60 px-1 border border-white/20">[M]</span>
+</button>
+<button aria-label="Toggle scanline effect" class="pixel-btn-chunky text-[9px] sm:text-[10px] px-3 py-1.5 text-cyan-300 hidden sm:flex items-center gap-2 cursor-pointer" id="crt-toggle-btn" onclick="toggleCRT()">
+<span class="">📺</span>
+<span class="font-silkscreen" id="crt-status">CRT: ON</span>
+<span class="text-[8px] text-white/60 bg-black/60 px-1 border border-white/20">[F1]</span>
+</button>
+</div>
+<!-- Retro Build & System Info Bar -->
+<div class="flex items-center gap-2 sm:gap-3">
+<div class="hidden lg:flex items-center gap-2 text-[9px] font-silkscreen text-emerald-300 bg-black/70 px-2.5 py-1 border border-emerald-500/40 drop-shadow-[0_2px_0_#000]">
+<span class="w-2 h-2 rounded-none bg-emerald-400 animate-ping inline-block"></span>
+      SERVIDOR LATAM [OK]
+    </div>
+<div class="text-[9px] font-silkscreen tracking-widest text-slate-200 bg-black/70 px-3 py-1 border border-white/30 drop-shadow-[0_2px_0_#000]">
+      PC MASTER BUILD • 1080p
+    </div>
+</div>
+</header>
+<!-- END: Top Arcade HUD Controls -->
+<!-- BEGIN: Main PC Content Stage (Frameless Underlined Clean Menu) -->
+<main class="relative z-40 flex-1 px-4 sm:px-10 md:px-14 flex flex-col justify-center my-auto">
+<div class="grid grid-cols-12 gap-6 items-center w-full max-w-[1550px] mx-auto">
+<!-- LEFT COLUMN: Game Title & Clean Underlined Retro Menu (NO heavy boxes!) -->
+<section class="col-span-12 md:col-span-7 lg:col-span-6 flex flex-col items-start space-y-3 pt-1">
+<!-- Top Pixel Decorative Subtitle -->
+<div aria-hidden="true" class="flex items-center gap-2 text-yellow-300 drop-shadow-[0_2px_0_#000]">
+<div class="flex space-x-1 text-xs font-silkscreen text-yellow-300">
+<span class="">▀▄▀</span>
+<span class="">▄▀▄</span>
+</div>
+<span class="text-[9px] sm:text-[10px] font-silkscreen tracking-widest text-yellow-300 bg-black/60 px-2 py-0.5 border border-yellow-400/40 uppercase drop-shadow-[0_2px_0_#000]">
+          EXPEDICIÓN A LA CUMBRE
+        </span>
+</div>
+<!-- Main Pixel Title: WAYFINDER (Accurate to user reference image) -->
+<div class="flex flex-col items-start select-none">
+<h1 class="text-4xl sm:text-5xl lg:text-6xl text-left text-white tracking-[0.16em] font-pixel font-bold pixel-shadow-title leading-none uppercase">
+          WAYFINDER
+        </h1>
+<!-- 8-bit Braided Geometric Divider (Faithful reproduction of user art motif) -->
+<div aria-hidden="true" class="flex items-center w-full max-w-[460px] mt-2 mb-3">
+<!-- Left bracket -->
+<div class="h-[3px] flex-1 bg-white shadow-[0_2px_0_#000] relative">
+<div class="absolute left-0 -top-[4px] w-[3px] h-[8px] bg-white shadow-[0_2px_0_#000]"></div>
+</div>
+<!-- Center knot pattern -->
+<div class="px-2 flex items-center justify-center">
+<div class="grid grid-cols-5 gap-[2px] p-1 bg-black/80 border border-white">
+<div class="w-1.5 h-1.5 bg-white"></div>
+<div class="w-1.5 h-1.5 bg-transparent"></div>
+<div class="w-1.5 h-1.5 bg-white"></div>
+<div class="w-1.5 h-1.5 bg-transparent"></div>
+<div class="w-1.5 h-1.5 bg-white"></div>
+<div class="w-1.5 h-1.5 bg-transparent"></div>
+<div class="w-1.5 h-1.5 bg-white"></div>
+<div class="w-1.5 h-1.5 bg-white"></div>
+<div class="w-1.5 h-1.5 bg-white"></div>
+<div class="w-1.5 h-1.5 bg-transparent"></div>
+<div class="w-1.5 h-1.5 bg-white"></div>
+<div class="w-1.5 h-1.5 bg-transparent"></div>
+<div class="w-1.5 h-1.5 bg-white"></div>
+<div class="w-1.5 h-1.5 bg-transparent"></div>
+<div class="w-1.5 h-1.5 bg-white"></div>
+</div>
+</div>
+<!-- Right bracket -->
+<div class="h-[3px] flex-1 bg-white shadow-[0_2px_0_#000] relative">
+<div class="absolute right-0 -top-[4px] w-[3px] h-[8px] bg-white shadow-[0_2px_0_#000]"></div>
+</div>
+</div>
+</div>
+<!-- UPGRADED CLEAN MENU: Underlined text ONLY, no rectangular box backgrounds! -->
+<nav aria-label="Menú Principal" class="w-full max-w-[420px] flex flex-col space-y-3 mt-1" data-purpose="pc-interactive-menu" id="pc-menu-container">
+<!-- OPTION 1: JUGAR -->
+<button class="menu-btn pc-menu-item group w-full text-left flex flex-col" id="btn-jugar" onclick="triggerAction('JUGAR')" type="button">
+<div class="flex items-center justify-between w-full">
+<div class="flex items-center gap-3">
+<span class="menu-cursor text-yellow-300 text-lg sm:text-xl pixel-blink pixel-shadow-menu opacity-0">▶</span>
+<span class="menu-text text-lg sm:text-xl font-pixel font-bold tracking-[0.14em] group-hover:text-yellow-200 pixel-shadow-menu text-white">
+                JUGAR
+              </span>
+</div>
+<span class="text-[10px] font-silkscreen text-yellow-300 font-bold ml-2 pixel-shadow-sub">[1]</span>
+</div>
+<!-- Custom pixel-art underline -->
+<div class="underline-bar w-full mt-1 shadow-[0_2px_0_#000] bg-white/40"></div>
+</button>
+<!-- OPTION 2: CONTINUAR -->
+<button class="menu-btn pc-menu-item group w-full text-left flex flex-col" id="btn-continuar" onclick="triggerAction('CONTINUAR')" type="button">
+<div class="flex items-center justify-between w-full">
+<div class="flex items-center gap-3">
+<span class="menu-cursor text-yellow-300 text-lg sm:text-xl pixel-blink opacity-0 group-hover:opacity-100 pixel-shadow-menu">▶</span>
+<div class="flex items-center gap-2">
+<span class="menu-text text-base sm:text-lg font-pixel font-bold tracking-[0.14em] text-white group-hover:text-yellow-300 pixel-shadow-menu">
+                  CONTINUAR
+                </span>
+<span class="text-[8px] font-silkscreen text-emerald-300 border border-emerald-400/80 px-1 bg-black/60 pixel-shadow-sub">RANURA 1</span>
+</div>
+</div>
+<span class="text-[10px] font-silkscreen text-white/70 group-hover:text-yellow-300 ml-2 pixel-shadow-sub">[2]</span>
+</div>
+<!-- Custom pixel-art underline -->
+<div class="underline-bar w-2/3 group-hover:w-full bg-white/40 group-hover:bg-yellow-400 mt-1 shadow-[0_2px_0_#000]"></div>
+</button>
+<!-- OPTION 3: AJUSTES / OPCIONES -->
+<button class="menu-btn pc-menu-item group w-full text-left flex flex-col active-focused" id="btn-opciones" onclick="triggerAction('OPCIONES')" type="button">
+<div class="flex items-center justify-between w-full">
+<div class="flex items-center gap-3">
+<span class="menu-cursor text-yellow-300 text-lg sm:text-xl pixel-blink group-hover:opacity-100 pixel-shadow-menu opacity-100">▶</span>
+<span class="menu-text text-base sm:text-lg font-pixel font-bold tracking-[0.14em] group-hover:text-yellow-300 pixel-shadow-menu text-yellow-300">
+                OPCIONES
+              </span>
+</div>
+<span class="text-[10px] font-silkscreen text-white/70 group-hover:text-yellow-300 ml-2 pixel-shadow-sub">[3]</span>
+</div>
+<!-- Custom pixel-art underline -->
+<div class="underline-bar group-hover:w-full group-hover:bg-yellow-400 mt-1 shadow-[0_2px_0_#000] w-full bg-yellow-400"></div>
+</button>
+<!-- OPTION 4: EXTRAS / CRÉDITOS -->
+<button class="menu-btn pc-menu-item group w-full text-left flex flex-col" id="btn-extras" onclick="triggerAction('EXTRAS')" type="button">
+<div class="flex items-center justify-between w-full">
+<div class="flex items-center gap-3">
+<span class="menu-cursor text-yellow-300 text-lg sm:text-xl pixel-blink opacity-0 group-hover:opacity-100 pixel-shadow-menu">▶</span>
+<span class="menu-text text-base sm:text-lg font-pixel font-bold tracking-[0.14em] text-white group-hover:text-yellow-300 pixel-shadow-menu">
+                CRÉDITOS
+              </span>
+</div>
+<span class="text-[10px] font-silkscreen text-white/70 group-hover:text-yellow-300 ml-2 pixel-shadow-sub">[4]</span>
+</div>
+<!-- Custom pixel-art underline -->
+<div class="underline-bar w-1/3 group-hover:w-full bg-white/40 group-hover:bg-yellow-400 mt-1 shadow-[0_2px_0_#000]"></div>
+</button>
+<!-- OPTION 5: SALIR -->
+<button class="menu-btn pc-menu-item group w-full text-left flex flex-col" id="btn-salir" onclick="triggerAction('SALIR')" type="button">
+<div class="flex items-center justify-between w-full">
+<div class="flex items-center gap-3">
+<span class="menu-cursor text-red-400 text-lg sm:text-xl pixel-blink opacity-0 group-hover:opacity-100 pixel-shadow-menu">▶</span>
+<span class="menu-text text-base sm:text-lg font-pixel font-bold tracking-[0.14em] text-white/90 group-hover:text-red-400 pixel-shadow-menu text-white">
+                SALIR
+              </span>
+</div>
+<span class="text-[10px] font-silkscreen text-white/70 group-hover:text-red-400 ml-2 pixel-shadow-sub">[ESC]</span>
+</div>
+<!-- Custom pixel-art underline -->
+<div class="underline-bar w-1/4 group-hover:w-full bg-white/40 group-hover:bg-red-400 mt-1 shadow-[0_2px_0_#000]"></div>
+</button>
+</nav>
+<!-- Feedback Banner for Arcade Actions -->
+<div class="h-6 text-[10px] tracking-widest text-yellow-300 uppercase font-silkscreen drop-shadow-[0_2px_0_#000] opacity-0 transition-opacity duration-200 mt-2" id="arcade-feedback">
+        [ INICIANDO MISIÓN ]
+      </div>
+</section>
+<!-- RIGHT COLUMN: Minimalist Floating HUD to let the mountain, flags, explorers & jaguar shine -->
+</div>
+</main>
+<!-- END: Main PC Content Stage -->
+<!-- BEGIN: Bottom PC HUD Controls & Status Bar -->
+<footer class="relative z-40 px-4 sm:px-8 pb-3 pt-1 flex flex-col justify-end" data-purpose="arcade-footer-meta">
+<div class="w-full bg-black/75 border-t border-b border-white/20 py-2 px-4 flex flex-wrap items-center justify-between text-[9px] sm:text-[10px] font-silkscreen tracking-wider text-slate-300 shadow-[0_2px_0_#000]">
+<!-- PC Keybinds Helper -->
+<div class="flex flex-wrap items-center gap-3 sm:gap-5 text-white/90">
+<div class="flex items-center gap-1.5">
+<kbd class="bg-white/20 text-yellow-300 px-1.5 py-0.5 border border-white/40 text-[9px] drop-shadow-[0_1px_0_#000]">ENTER / ESPACIO</kbd>
+<span class="text-slate-300 drop-shadow-[0_1px_0_#000]">SELECCIONAR</span>
+</div>
+<div class="flex items-center gap-1.5">
+<kbd class="bg-white/20 text-yellow-300 px-1.5 py-0.5 border border-white/40 text-[9px] drop-shadow-[0_1px_0_#000]">W/S o ↑/↓</kbd>
+<span class="text-slate-300 drop-shadow-[0_1px_0_#000]">NAVEGAR</span>
+</div>
+<div class="flex items-center gap-1.5">
+<kbd class="bg-white/20 text-yellow-300 px-1.5 py-0.5 border border-white/40 text-[9px] drop-shadow-[0_1px_0_#000]">ESC</kbd>
+<span class="text-slate-300 drop-shadow-[0_1px_0_#000]">SALIR</span>
+</div>
+</div>
+<!-- Lore status & Copyright -->
+<div class="flex items-center gap-3 mt-1 sm:mt-0 text-right">
+<span class="flex items-center gap-1.5 text-emerald-300 drop-shadow-[0_1px_0_#000]">
+<span class="inline-block w-2 h-2 bg-emerald-400 animate-pulse"></span>
+        SENDA DEL JAGUAR
+      </span>
+<span class="text-white/40">|</span>
+<span class="text-white/70 drop-shadow-[0_1px_0_#000]">© 2024 PIXEL STUDIOS</span>
+</div>
+</div>
+</footer>
+<!-- END: Bottom PC HUD Controls & Status Bar -->
+<!-- BEGIN: Simple Arcade Modal Dialog -->
+<div class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 hidden" id="pixel-modal">
+<div class="bg-slate-900 border-3 border-white p-6 max-w-[440px] w-full text-center shadow-[0_8px_0_#000] pixel-panel">
+<div class="border-b-2 border-white/20 pb-2 mb-3">
+<h3 class="text-base font-bold text-yellow-300 tracking-widest uppercase font-pixel" id="modal-title">WAYFINDER</h3>
+</div>
+<p class="text-xs leading-relaxed text-white mb-6 font-silkscreen whitespace-pre-line" id="modal-body">
+      ¿Listo para comenzar la travesía hacia el santuario?
+    </p>
+<div class="flex justify-center gap-4">
+<button class="pixel-btn-chunky pixel-btn-primary px-4 py-2 text-xs font-pixel text-yellow-200 tracking-wider cursor-pointer" onclick="confirmModal()">
+        ACEPTAR [Enter]
+      </button>
+<button class="pixel-btn-chunky px-4 py-2 text-xs font-pixel text-slate-300 tracking-wider cursor-pointer" onclick="closeModal()">
+        CANCELAR [Esc]
+      </button>
+</div>
+</div>
+</div>
+<!-- END: Simple Arcade Modal Dialog -->
+</div>
+<!-- END: PC 16:9 Desktop Gaming Frame -->
+<!-- BEGIN: Interactive Arcade & PC Input Script -->
+<script data-purpose="retro-audio-and-navigation">
+  let audioCtx = null;
+  let isSoundOn = true;
+  let isCRTScanlinesOn = true;
+
+  function getAudioContext() {
+    if (!audioCtx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AudioContext();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    return audioCtx;
+  }
+
+  // Play 8-bit Retro Audio synth
+  function playRetroBeep(type = 'select') {
+    if (!isSoundOn) return;
+    try {
+      const ctx = getAudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      const now = ctx.currentTime;
+
+      if (type === 'select') {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.setValueAtTime(880, now + 0.04);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+        osc.start(now);
+        osc.stop(now + 0.1);
+      } else if (type === 'confirm') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(330, now);
+        osc.frequency.setValueAtTime(494, now + 0.06);
+        osc.frequency.setValueAtTime(659, now + 0.12);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.31);
+      } else if (type === 'cancel') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(260, now);
+        osc.frequency.setValueAtTime(140, now + 0.08);
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        osc.start(now);
+        osc.stop(now + 0.21);
+      }
+    } catch (e) {
+      console.warn('Audio not available:', e);
+    }
+  }
+
+  // Sound toggle button
+  const soundToggleBtn = document.getElementById('sound-toggle-btn');
+  const soundIcon = document.getElementById('sound-icon');
+  const soundStatus = document.getElementById('sound-status');
+
+  function toggleSound() {
+    isSoundOn = !isSoundOn;
+    soundIcon.textContent = isSoundOn ? '🔊' : '🔇';
+    soundStatus.textContent = isSoundOn ? 'CHIPTUNE: ON' : 'CHIPTUNE: OFF';
+    if (isSoundOn) playRetroBeep('select');
+  }
+
+  if (soundToggleBtn) {
+    soundToggleBtn.addEventListener('click', toggleSound);
+  }
+
+  // CRT Scanlines toggle
+  const arcadeFrame = document.getElementById('arcade-cabinet-frame');
+  const crtStatus = document.getElementById('crt-status');
+
+  function toggleCRT() {
+    isCRTScanlinesOn = !isCRTScanlinesOn;
+    if (isCRTScanlinesOn) {
+      arcadeFrame.classList.add('crt-scanlines');
+      crtStatus.textContent = 'CRT: ON';
+    } else {
+      arcadeFrame.classList.remove('crt-scanlines');
+      crtStatus.textContent = 'CRT: OFF';
+    }
+    playRetroBeep('select');
+  }
+
+  // Menu navigation logic (Clean Underlined Buttons)
+  const menuButtons = Array.from(document.querySelectorAll('.pc-menu-item'));
+  let activeIndex = 0;
+
+  function setFocusedMenuIndex(newIndex) {
+    if (newIndex < 0) newIndex = menuButtons.length - 1;
+    if (newIndex >= menuButtons.length) newIndex = 0;
+
+    activeIndex = newIndex;
+
+    menuButtons.forEach((btn, idx) => {
+      const cursor = btn.querySelector('.menu-cursor');
+      const text = btn.querySelector('.menu-text');
+      const bar = btn.querySelector('.underline-bar');
+
+      if (idx === activeIndex) {
+        btn.classList.add('active-focused');
+        cursor?.classList.remove('opacity-0');
+        cursor?.classList.add('opacity-100');
+        if (text) {
+          text.classList.remove('text-white', 'text-white/90');
+          text.classList.add('text-yellow-300');
+        }
+        if (bar) {
+          bar.classList.remove('w-1/4', 'w-1/3', 'w-1/2', 'w-2/3', 'bg-white/40');
+          bar.classList.add('w-full', 'bg-yellow-400');
+        }
+        btn.focus();
+      } else {
+        btn.classList.remove('active-focused');
+        cursor?.classList.add('opacity-0');
+        cursor?.classList.remove('opacity-100');
+        if (text) {
+          text.classList.remove('text-yellow-300');
+          text.classList.add('text-white');
+        }
+        if (bar) {
+          bar.classList.remove('bg-yellow-400');
+          bar.classList.add('bg-white/40');
+          if (idx === 1) bar.classList.add('w-2/3');
+          else if (idx === 2) bar.classList.add('w-1/2');
+          else if (idx === 3) bar.classList.add('w-1/3');
+          else if (idx === 4) bar.classList.add('w-1/4');
+        }
+      }
+    });
+  }
+
+  // Hover detection
+  menuButtons.forEach((btn, idx) => {
+    btn.addEventListener('mouseenter', () => {
+      if (activeIndex !== idx) {
+        playRetroBeep('select');
+        setFocusedMenuIndex(idx);
+      }
+    });
+  });
+
+  // Action Triggers
+  const feedback = document.getElementById('arcade-feedback');
+  const modal = document.getElementById('pixel-modal');
+  const modalTitle = document.getElementById('modal-title');
+  const modalBody = document.getElementById('modal-body');
+
+  function triggerAction(actionName) {
+    playRetroBeep('confirm');
+
+    if (actionName === 'JUGAR') {
+      feedback.textContent = '>> INICIANDO NUEVA AVENTURA EN LA MONTAÑA... <<';
+      feedback.style.opacity = '1';
+      setTimeout(() => {
+        modalTitle.textContent = 'NUEVA PARTIDA';
+        modalBody.textContent = 'Subiendo por el sendero hacia la cumbre...\n¿Iniciar expedición con los 3 exploradores?';
+        modal.classList.remove('hidden');
+      }, 200);
+    } else if (actionName === 'CONTINUAR') {
+      feedback.textContent = '>> CARGANDO PARTIDA: CHECKPOINT SELVA <<';
+      feedback.style.opacity = '1';
+      setTimeout(() => {
+        modalTitle.textContent = 'REANUDAR PARTIDA';
+        modalBody.textContent = 'Archivo: RANURA 1\nUbicación: Desfiladero del Jaguar\nProgreso: 4 banderas alcanzadas.';
+        modal.classList.remove('hidden');
+      }, 200);
+    } else if (actionName === 'OPCIONES') {
+      modalTitle.textContent = 'AJUSTES PC';
+      modalBody.textContent = 'RESOLUCIÓN: 1920x1080 (Pantalla Completa)\nFILTRO CRT: RETRO SCANLINES\nCHIPTUNE AUDIO: ACTIVADO\nIDIOMA: ESPAÑOL';
+      modal.classList.remove('hidden');
+    } else if (actionName === 'EXTRAS') {
+      modalTitle.textContent = 'CRÉDITOS Y EXTRAS';
+      modalBody.textContent = 'WAYFINDER RETRO EDITION\nARTE PIXEL ORIGINAL POR ARTISTA WAYFINDER\nDISEÑO DE NIVELES: LA CORDILLERA';
+      modal.classList.remove('hidden');
+    } else if (actionName === 'SALIR') {
+      feedback.textContent = '[ REGRESANDO AL ESCRITORIO ]';
+      feedback.style.opacity = '1';
+      setTimeout(() => {
+        modalTitle.textContent = 'SALIR AL ESCRITORIO';
+        modalBody.textContent = '¿Seguro que deseas salir del juego y guardar tu avance?';
+        modal.classList.remove('hidden');
+      }, 150);
+    }
+  }
+
+  function closeModal() {
+    playRetroBeep('cancel');
+    modal.classList.add('hidden');
+    feedback.style.opacity = '0';
+  }
+
+  function confirmModal() {
+    playRetroBeep('confirm');
+    modal.classList.add('hidden');
+    feedback.textContent = '>> ACCIÓN CONFIRMADA <<';
+    feedback.style.opacity = '1';
+    setTimeout(() => {
+      feedback.style.opacity = '0';
+    }, 1200);
+  }
+
+  // Keyboard Navigation
+  window.addEventListener('keydown', (e) => {
+    const isModalOpen = !modal.classList.contains('hidden');
+
+    if (isModalOpen) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeModal();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        confirmModal();
+      }
+      return;
+    }
+
+    if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+      e.preventDefault();
+      playRetroBeep('select');
+      setFocusedMenuIndex(activeIndex + 1);
+    } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+      e.preventDefault();
+      playRetroBeep('select');
+      setFocusedMenuIndex(activeIndex - 1);
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      menuButtons[activeIndex]?.click();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      triggerAction('SALIR');
+    } else if (e.key === '1') {
+      triggerAction('JUGAR');
+    } else if (e.key === '2') {
+      triggerAction('CONTINUAR');
+    } else if (e.key === '3') {
+      triggerAction('OPCIONES');
+    } else if (e.key === '4') {
+      triggerAction('EXTRAS');
+    } else if (e.key === 'm' || e.key === 'M') {
+      toggleSound();
+    } else if (e.key === 'F1') {
+      e.preventDefault();
+      toggleCRT();
+    }
+  });
+
+  // Start focused on JUGAR
+  setFocusedMenuIndex(0);
+</script>
+<!-- END: Interactive Arcade & PC Input Script -->
+
+
+</body></html>

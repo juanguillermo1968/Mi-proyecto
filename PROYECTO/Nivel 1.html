@@ -1,0 +1,317 @@
+<!DOCTYPE html><html lang="es"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Wayfinder - Nivel 1: Selva del Darién (Refugio)</title>
+<!-- Tailwind CSS v3 CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: 8-bit Retro Arcade Typography -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;family=VT323&amp;display=swap" rel="stylesheet">
+<!-- BEGIN: StyleConfigurations -->
+<style data-purpose="retro-typography">
+    .font-pixel {
+      font-family: 'Press Start 2P', monospace;
+    }
+    .font-vt323 {
+      font-family: 'VT323', monospace;
+    }
+  </style>
+<style data-purpose="crt-effects">
+    /* Scanline overlay rendering */
+    .crt-scanlines {
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.45) 50%
+      ), linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.04),
+        rgba(0, 255, 0, 0.02),
+        rgba(0, 0, 255, 0.04)
+      );
+      background-size: 100% 4px, 6px 100%;
+      pointer-events: none;
+    }
+
+    /* Screen vignette and curved border look */
+    .crt-vignette {
+      box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.85), inset 0 0 30px rgba(0, 0, 0, 0.95);
+      pointer-events: none;
+    }
+
+    /* Pixel art border style standard */
+    .pixel-box {
+      border: 3px solid #1a221f;
+      box-shadow: 
+        inset 2px 2px 0px #4ade8020,
+        inset -2px -2px 0px #042f2e,
+        3px 3px 0px #000;
+    }
+
+    .pixel-btn {
+      position: relative;
+      image-rendering: pixelated;
+      transition: all 0.1s ease;
+      box-shadow: 0 4px 0 #0f172a;
+    }
+
+    .pixel-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #0f172a;
+    }
+
+    /* Pulsing animations for interactive prompts */
+    @keyframes retro-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.75; transform: scale(0.99); }
+    }
+    .retro-blink {
+      animation: retro-pulse 2s infinite ease-in-out;
+    }
+  </style>
+<!-- END: StyleConfigurations -->
+</head>
+<body class="bg-black text-slate-100 min-h-screen flex items-center justify-center p-0 md:p-3 overflow-hidden select-none">
+<!-- BEGIN: GameCabinetContainer -->
+<main class="relative w-full max-w-[1380px] aspect-[16/9] max-h-screen bg-black overflow-hidden flex flex-col justify-between shadow-2xl border-2 md:border-4 border-emerald-950 rounded-lg">
+<!-- Retro Arcade CRT Scanlines & Vignette Layer -->
+<div class="absolute inset-0 crt-scanlines z-30"></div>
+<div class="absolute inset-0 crt-vignette z-30"></div>
+<!-- Main Game Pixel Art Background Scene -->
+<img alt="Authentic 16-bit retro arcade pixel art video game screenshot - Selva del Darién Refugio" class="absolute inset-0 w-full h-full object-cover object-center z-0 image-rendering-pixelated pointer-events-none" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDxw37LQXY2U8qBK97hXhOxxyf1U6Jr3gOXIvaJSXhiNuVfnOPYxWo4tIYwoA4TH5gsaETgsWnLoRnxipBKRcYPDZRjbblNQFkN98Qh7Bcr5067u41Ip2sTrNOSS8QV_-3mRHUZwxrcn32lvacKQGAhdZvjuS9DnkecEcGPyTJ1ogJG2SnlzlvCbsZHeLaRV15y_EMmoJcvz9hnfgSnjGO6BvftLjj07DzIgLuj9hmAkfeKkQ-HP304A">
+<!-- Ambient Darkened Top & Bottom Gradients for readable HUD -->
+<div class="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/80 via-black/40 to-transparent z-10 pointer-events-none"></div>
+<div class="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black/90 via-black/60 to-transparent z-10 pointer-events-none"></div>
+<!-- BEGIN: TopHUDSection -->
+<header class="relative z-20 flex justify-between items-start p-3 md:p-5 w-full font-pixel text-xs tracking-wider">
+<!-- Top-Left: Player Stats & Camp Resources Collected -->
+<div class="flex flex-col gap-2 max-w-sm sm:max-w-md">
+<!-- Player Identity & Hearts -->
+<div class="pixel-box bg-slate-950/85 backdrop-blur-sm p-2.5 rounded text-emerald-400 border border-emerald-500/40">
+<div class="flex items-center justify-between gap-3 border-b border-emerald-900/80 pb-1.5 mb-1.5">
+<span class="text-amber-400 font-bold tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">JOHAN | NV. 1</span>
+<div class="flex gap-1" id="hearts-container" title="Salud 100%">
+<span class="text-rose-500 text-sm drop-shadow">❤️</span>
+<span class="text-rose-500 text-sm drop-shadow">❤️</span>
+<span class="text-rose-500 text-sm drop-shadow">❤️</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-[9px] text-slate-300">
+<span class="text-cyan-400">ARMA: ARCO Y SOGA</span>
+<span class="bg-cyan-950/60 px-1.5 py-0.5 border border-cyan-700/50 rounded text-cyan-200">[E] LISTA</span>
+</div>
+</div>
+<!-- Inventory Camp Supplies Counters -->
+<div class="pixel-box bg-slate-950/85 backdrop-blur-sm px-2.5 py-2 rounded text-[8px] md:text-[9px] leading-relaxed border border-amber-500/30 text-amber-200/90 shadow-md">
+<div class="text-[7px] text-amber-500/90 uppercase tracking-widest pb-1 border-b border-amber-900/40 mb-1 flex items-center justify-between">
+<span>SUMINISTROS RECOGIDOS</span>
+<span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+</div>
+<div class="grid grid-cols-2 gap-x-2 gap-y-1">
+<div class="flex justify-between items-center text-slate-200">
+<span class="text-slate-400">🥫 COMIDA:</span>
+<span class="text-emerald-400 font-bold ml-1" id="counter-food">3/5</span>
+</div>
+<div class="flex justify-between items-center text-slate-200">
+<span class="text-slate-400">💧 AGUA:</span>
+<span class="text-cyan-400 font-bold ml-1" id="counter-water">2/3</span>
+</div>
+<div class="flex justify-between items-center text-slate-200">
+<span class="text-slate-400">🩹 BOTIQUÍN:</span>
+<span class="text-rose-400 font-bold ml-1" id="counter-meds">1/2</span>
+</div>
+<div class="flex justify-between items-center text-slate-200">
+<span class="text-slate-400">🏹 FLECHAS:</span>
+<span class="text-amber-400 font-bold ml-1" id="counter-arrows">18</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Top-Right: Level / Stage Info Badge -->
+<div class="text-right flex flex-col items-end gap-1.5">
+<div class="pixel-box bg-slate-950/90 backdrop-blur-sm border-2 border-emerald-500/60 px-3 py-2 rounded shadow-lg text-right">
+<div class="text-amber-400 font-bold text-[10px] sm:text-xs tracking-wider flex items-center gap-1.5 justify-end">
+<span class="text-emerald-400">★</span> FASE 3: CAMPAMENTO DEL DARIÉN
+          </div>
+<p class="text-[8px] sm:text-[9px] text-emerald-200/90 mt-1 uppercase tracking-wide">
+            ZONA DE DESCANSO • REFUGIO DE MIGRANTES
+          </p>
+</div>
+<div class="bg-black/75 px-2 py-1 rounded border border-slate-700/60 text-[8px] text-slate-400 font-vt323 tracking-widest text-base">
+          COORD: 7°54'N 77°28'W • CLIMA: LLUVIA TROPICAL
+        </div>
+</div>
+</header>
+<!-- END: TopHUDSection -->
+<!-- BEGIN: CenterInteractionPrompts -->
+<!-- Floating context indicators and action keys -->
+<div class="relative z-20 flex flex-col items-center justify-center my-auto pointer-events-none px-4">
+<div class="pixel-box bg-slate-950/85 backdrop-blur-md border border-amber-400/50 p-2 sm:p-3 rounded-lg max-w-xl text-center retro-blink">
+<div class="text-amber-300 font-pixel text-[8px] sm:text-[10px] flex items-center justify-center gap-2 mb-1">
+<span class="inline-block w-2 h-2 bg-amber-400 rounded-sm"></span>
+<span>CAMPAMENTO SEGURO • ACCIONES DISPONIBLES</span>
+<span class="inline-block w-2 h-2 bg-amber-400 rounded-sm"></span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-left font-pixel text-[7px] sm:text-[8px] text-slate-200 mt-2">
+<div class="bg-black/50 p-1.5 rounded border border-slate-800">
+<span class="text-amber-400 font-bold">[E]</span> RECOGER SUMINISTROS
+          </div>
+<div class="bg-black/50 p-1.5 rounded border border-slate-800">
+<span class="text-cyan-400 font-bold">[F]</span> DIALOGAR CON FAMILIAS
+          </div>
+<div class="bg-black/50 p-1.5 rounded border border-slate-800">
+<span class="text-rose-400 font-bold">[ESPACIO]</span> FOGATA (RESTAURAR)
+          </div>
+<div class="bg-black/50 p-1.5 rounded border border-slate-800">
+<span class="text-emerald-400 font-bold">[D / ENTER]</span> RUTA A PANAMÁ
+          </div>
+</div>
+</div>
+</div>
+<!-- END: CenterInteractionPrompts -->
+<!-- BEGIN: BottomDialogueAndActionControls -->
+<footer class="relative z-20 w-full p-2.5 sm:p-4 flex flex-col gap-2.5">
+<!-- Narrative Dialogue Box -->
+<article class="pixel-box bg-slate-950/90 backdrop-blur-md border-2 border-emerald-600/70 p-3 sm:p-3.5 rounded-lg">
+<div class="flex items-center justify-between border-b border-emerald-900/60 pb-1.5 mb-2">
+<h2 class="font-pixel text-[9px] sm:text-[11px] text-emerald-400 tracking-wider flex items-center gap-2" id="dialogue-speaker">
+<span class="text-amber-400">🏕️</span> REFUGIO PROVISIONAL - SELVA DEL DARIÉN
+          </h2>
+<span class="font-vt323 text-slate-400 text-sm tracking-widest hidden sm:inline-block">MODO HISTORIA // CAPÍTULO 1</span>
+</div>
+<p class="font-pixel text-[8px] sm:text-[9.5px] leading-relaxed sm:leading-loose text-slate-200 tracking-wide" id="dialogue-text">
+          Tras sobrevivir a las fauces del Cocodrilo Gigante y cruzar el pantano, Johan alcanza un campamento oculto entre los árboles. Familias venezolanas y migrantes de diversos países comparten calor y provisiones antes de emprender el último tramo hacia Panamá.
+        </p>
+</article>
+<!-- Testing & Interactive Gameplay Buttons -->
+<nav aria-label="Controles del juego retro" class="grid grid-cols-1 sm:grid-cols-3 gap-2 font-pixel text-[8px] sm:text-[9px]">
+<!-- Action 1: Scavenge Resources -->
+<button class="pixel-btn bg-emerald-800 hover:bg-emerald-700 active:bg-emerald-900 text-emerald-100 border-2 border-emerald-400/70 py-2.5 px-3 rounded flex items-center justify-center gap-2 cursor-pointer shadow-md" id="btn-scavenge" type="button">
+<span>🎒</span>
+<span>RECOGER SUMINISTROS</span>
+</button>
+<!-- Action 2: Talk to Migrants -->
+<button class="pixel-btn bg-cyan-900 hover:bg-cyan-800 active:bg-cyan-950 text-cyan-100 border-2 border-cyan-400/70 py-2.5 px-3 rounded flex items-center justify-center gap-2 cursor-pointer shadow-md" id="btn-talk" type="button">
+<span>💬</span>
+<span>HISTORIAS MIGRANTES</span>
+</button>
+<!-- Action 3: Proceed to Next Level -->
+<button class="pixel-btn bg-amber-700 hover:bg-amber-600 active:bg-amber-800 text-amber-100 border-2 border-amber-300 py-2.5 px-3 rounded flex items-center justify-center gap-2 cursor-pointer shadow-md" id="btn-continue" type="button">
+<span>🚶‍♂️</span>
+<span>AVANZAR A PANAMÁ ➔</span>
+</button>
+</nav>
+</footer>
+<!-- END: BottomDialogueAndActionControls -->
+<!-- Status Toast Notification Box -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 bg-black/95 border-2 border-amber-400 text-amber-300 font-pixel text-xs px-5 py-3 rounded-lg shadow-2xl hidden text-center pointer-events-none transition-all" id="status-toast">
+<span id="toast-message">SUMINISTRO OBTENIDO</span>
+</div>
+</main>
+<!-- END: GameCabinetContainer -->
+<!-- BEGIN: InteractiveGameScript -->
+<script data-purpose="gameplay-interactivity">
+    // State variables
+    let food = 3;
+    const maxFood = 5;
+    let water = 2;
+    const maxWater = 3;
+    let meds = 1;
+    const maxMeds = 2;
+    let dialogueIndex = 0;
+
+    // Migrant camp narratives based on Venezuelan and international migrants
+    const migrantStories = [
+      {
+        speaker: "MADRE MIGRANTE (CARACAS)",
+        text: "«Gracias por la leña, muchacho. Llevamos cuatro días atravesando lodo y espinas con la niña en brazos. Saber que la frontera panameña está cerca nos da fuerzas.»"
+      },
+      {
+        speaker: "DON CARLOS (VALENCIA)",
+        text: "«Cuida bien tu calzado y no bebas agua del río sin hervir. La selva es dura, pero el hambre y la falta de futuro en casa eran todavía más difíciles.»"
+      },
+      {
+        speaker: "FAMILIA EN LA FOGATA",
+        text: "«Aquí nadie camina solo. El fuego calienta a todos por igual: venezolanos, colombianos y haitianos. Mañana salimos antes del amanecer rumbo a Bajo Chiquito.»"
+      },
+      {
+        speaker: "JOHAN (PROTAGONISTA)",
+        text: "«He preparado flechas y purificado las cantimploras. El Darién no nos detendrá. Descansaremos un momento antes del cruce final.»"
+      }
+    ];
+
+    // DOM Elements
+    const foodEl = document.getElementById('counter-food');
+    const waterEl = document.getElementById('counter-water');
+    const medsEl = document.getElementById('counter-meds');
+    const speakerEl = document.getElementById('dialogue-speaker');
+    const dialogueEl = document.getElementById('dialogue-text');
+    const toastEl = document.getElementById('status-toast');
+    const toastMsg = document.getElementById('toast-message');
+
+    // Utility: Show 16-bit arcade style message popup
+    function showNotification(msg) {
+      toastMsg.innerText = msg;
+      toastEl.classList.remove('hidden');
+      setTimeout(() => {
+        toastEl.classList.add('hidden');
+      }, 1600);
+    }
+
+    // Interactive Button 1: Scavenge
+    document.getElementById('btn-scavenge').addEventListener('click', () => {
+      let updated = false;
+      if (food < maxFood) {
+        food++;
+        foodEl.textContent = `${food}/${maxFood}`;
+        updated = true;
+      }
+      if (water < maxWater) {
+        water++;
+        waterEl.textContent = `${water}/${maxWater}`;
+        updated = true;
+      }
+      if (meds < maxMeds) {
+        meds++;
+        medsEl.textContent = `${meds}/${maxMeds}`;
+        updated = true;
+      }
+
+      if (updated) {
+        showNotification("¡PROVISIONES RECOGIDAS! (+Raciones, +Agua pura)");
+      } else {
+        showNotification("EL CAMPAMENTO YA NO TIENE MÁS SUMINISTROS DISPONIBLES");
+      }
+    });
+
+    // Interactive Button 2: Dialogue cycle
+    document.getElementById('btn-talk').addEventListener('click', () => {
+      dialogueIndex = (dialogueIndex + 1) % migrantStories.length;
+      const current = migrantStories[dialogueIndex];
+      speakerEl.innerHTML = `<span class="text-amber-400">💬</span> ${current.speaker}`;
+      dialogueEl.textContent = current.text;
+    });
+
+    // Interactive Button 3: Proceed forward
+    document.getElementById('btn-continue').addEventListener('click', () => {
+      showNotification("CARGANDO NIVEL 2: PUESTO FRONTERIZO BAJO CHIQUITO...");
+      setTimeout(() => {
+        speakerEl.innerHTML = `<span class="text-emerald-400">★</span> RUTA COMPLETADA`;
+        dialogueEl.textContent = "Has asegurado víveres para el grupo y descansado junto al fuego. La marcha hacia Panamá continúa al amanecer.";
+      }, 1800);
+    });
+
+    // Retro keyboard shortcuts for arcade feel
+    window.addEventListener('keydown', (e) => {
+      const key = e.key.toLowerCase();
+      if (key === 'e') {
+        document.getElementById('btn-scavenge').click();
+      } else if (key === 'f') {
+        document.getElementById('btn-talk').click();
+      } else if (key === ' ' || key === 'enter' || key === 'd') {
+        document.getElementById('btn-continue').click();
+      }
+    });
+  </script>
+<!-- END: InteractiveGameScript -->
+</body></html>
